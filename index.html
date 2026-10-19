@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Copla</title>
+  <meta name="description" content="Una caja coplera de Jujuy para tocar en el celu.">
+  <meta name="theme-color" content="#2a1d16">
+  <meta property="og:title" content="Copla">
+  <meta property="og:description" content="Una caja coplera de Jujuy para tocar en el celu.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><circle cx='32' cy='32' r='29' fill='%237a4a2a'/><circle cx='32' cy='32' r='22' fill='%23efe2c6'/></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,500;1,400&family=Work+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="top">
+    <h1>copla</h1>
+    <p class="hint" id="hint">Tocá el cuero. Más al centro, más grave; en el aro, el golpe seco.</p>
+  </header>
+
+  <main class="stage">
+    <svg class="caja" id="caja" viewBox="-200 -200 400 470" role="img" aria-label="Caja coplera: tocala">
+      <defs>
+        <radialGradient id="cuero" cx="45%" cy="40%" r="65%">
+          <stop offset="0" stop-color="#f6ecd6"/>
+          <stop offset=".7" stop-color="#e9d8b4"/>
+          <stop offset="1" stop-color="#cdb084"/>
+        </radialGradient>
+        <radialGradient id="madera" cx="50%" cy="50%" r="50%">
+          <stop offset=".86" stop-color="#8a5532"/>
+          <stop offset=".93" stop-color="#6e3f22"/>
+          <stop offset="1" stop-color="#4a2814"/>
+        </radialGradient>
+        <filter id="fibras" x="-10%" y="-10%" width="120%" height="120%">
+          <feTurbulence type="fractalNoise" baseFrequency=".9 .05" numOctaves="2" seed="7"/>
+          <feColorMatrix values="0 0 0 0 .45  0 0 0 0 .32  0 0 0 0 .18  0 0 0 .16 0"/>
+          <feComposite in2="SourceGraphic" operator="in"/>
+        </filter>
+        <clipPath id="clipCuero"><circle r="150"/></clipPath>
+      </defs>
+
+      <!-- cintas de colores colgando del aro -->
+      <g class="cintas" id="cintas"></g>
+
+      <!-- aro de madera con los tientos en zigzag -->
+      <circle class="aro" id="aro" r="186" fill="url(#madera)"/>
+      <g class="tientos" id="tientos"></g>
+
+      <!-- cuero -->
+      <g class="parche" id="parche">
+        <circle r="150" fill="url(#cuero)"/>
+        <circle r="150" fill="#fff" filter="url(#fibras)"/>
+        <g clip-path="url(#clipCuero)" id="ondas"></g>
+        <circle r="150" fill="none" stroke="#7a4a2a" stroke-opacity=".35" stroke-width="3"/>
+      </g>
+
+      <!-- el palillo (huajtana) aparece donde golpeás -->
+      <g class="palillo" id="palillo" opacity="0">
+        <line x1="0" y1="0" x2="120" y2="-140" stroke="#5a3418" stroke-width="9" stroke-linecap="round"/>
+        <circle r="13" fill="#e6dccb" stroke="#5a3418" stroke-width="3"/>
+      </g>
+    </svg>
+  </main>
+
+  <footer class="foot">
+    Si no suena, fijate que el volumen esté arriba.
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
