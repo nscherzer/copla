@@ -5,5 +5,7 @@ grave; hacia el borde, más agudo y seco; en el aro de madera, el golpe seco del
 
 Sitio estático (HTML + CSS + JS, sin build). Para probarlo local: `python3 -m http.server`.
 
-El sonido es sintetizado con Web Audio (sin grabaciones): un tono grave que cae (el cuero),
-un armónico y ruido filtrado (la chirlera, la cuerdita que vibra contra el parche).
+El sonido son golpes de una caja de verdad (`sonidos/`), cortados de la intro de
+[«vidala quichuista.wav»](https://freesound.org/people/lupalenzuela/sounds/161658/) de
+lupalenzuela en Freesound (CC BY-NC 4.0: con crédito y sin uso comercial). Según dónde tocás
+cambia el golpe, la velocidad y el filtro. Si no cargan, suena una caja sintetizada con Web Audio.

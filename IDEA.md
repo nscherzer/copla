@@ -7,10 +7,11 @@ acompañan las coplas) que se toca con el dedo y suena como una caja.
 
 ## Decisiones (2026-10-18)
 - MVP web para el celu. Más adelante, quizás app.
-- Sonido sintetizado (sin samples) para arrancar; si no convence, grabar una caja de verdad.
+- Sonido: golpes reales de una caja (grabación CC BY-NC de Freesound, 2026-10-18). Hay muy pocas
+  grabaciones libres de caja coplera; si se quiere mejor calidad o uso comercial, grabar una propia.
 - Golpe según dónde tocás: centro grave, borde agudo, aro seco. Multitáctil.
 
 ## Ideas para después
-- Grabar samples de una caja real.
+- Grabar una caja propia (más golpes: centro, borde, aro, apagado) — necesario si alguna vez se vende.
 - Ritmos de baguala / vidala para acompañar, o grabar y repetir lo que tocaste.
 - Cantar coplas encima (letra en pantalla).

@@ -75,3 +75,5 @@ body {
   font-family: var(--serif); font-style: italic; font-size: 15px; color: var(--muted);
   min-height: 34px;
 }
+.credito { display: block; margin-top: 4px; font-family: var(--sans); font-style: normal; font-size: 10px; opacity: .7; }
+.credito a { color: inherit; }

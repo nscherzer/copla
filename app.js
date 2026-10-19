@@ -41,8 +41,13 @@ function el(tag, attrs, parent) {
   });
 })();
 
-// ---------- sonido (sintetizado con Web Audio, sin muestras) ----------
+// ---------- sonido ----------
+// Golpes de una caja de verdad: la intro de "vidala quichuista.wav" de lupalenzuela en
+// Freesound (CC BY-NC 4.0), cortados en sonidos/. El 5 es el más brillante (para el borde).
+// Mientras no cargaron (o si fallan), suena una caja sintetizada.
 let ac = null, master = null, noise = null;
+const crudos = [1, 2, 3, 4, 5].map((n) => fetch(`sonidos/golpe${n}.wav`).then((r) => r.arrayBuffer()).catch(() => null));
+let golpes = null; // AudioBuffers, cuando están
 
 function audio() {
   if (ac) { if (ac.state !== "running") ac.resume(); return ac; }
@@ -56,7 +61,20 @@ function audio() {
   noise = ac.createBuffer(1, ac.sampleRate, ac.sampleRate);
   const d = noise.getChannelData(0);
   for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+  Promise.all(crudos.map((p) => p.then((buf) => buf && new Promise((ok) => ac.decodeAudioData(buf, ok, () => ok(null))))))
+    .then((bs) => { if (bs.every(Boolean)) golpes = bs; });
   return ac;
+}
+
+function muestra(buf, rate, peak, t, lowpass) {
+  const s = ac.createBufferSource(), g = ac.createGain();
+  s.buffer = buf;
+  s.playbackRate.value = rate;
+  g.gain.value = peak;
+  let node = s;
+  if (lowpass) { const f = ac.createBiquadFilter(); f.type = "lowpass"; f.frequency.value = lowpass; node = node.connect(f); }
+  node.connect(g).connect(master);
+  s.start(t);
 }
 
 function env(gain, t, peak, decay) {
@@ -88,9 +106,21 @@ function hiss(freq, q, peak, decay, t, highpass = 0) {
 }
 
 // golpe en el cuero: dist 0 = centro (grave, largo), 1 = borde (más agudo y seco)
+let ultimo = -1;
 function golpeCuero(dist, vel) {
   audio();
-  const t = ac.currentTime + 0.005, f0 = 92 + dist * 70;
+  const t = ac.currentTime + 0.005;
+  if (golpes) {
+    // al borde, el golpe brillante; si no, uno de los otros cuatro sin repetir el anterior
+    let i;
+    if (dist > 0.8) i = 4;
+    else do { i = Math.floor(Math.random() * 4); } while (i === ultimo);
+    ultimo = i;
+    const rate = (0.9 + dist * 0.28) * (0.98 + Math.random() * 0.04);
+    muestra(golpes[i], rate, vel, t, 9000 - (1 - dist) * 5000);
+    return;
+  }
+  const f0 = 92 + dist * 70;
   tone("sine", f0 * 1.7, f0, 0.07, 0.95 * vel, 0.55 - dist * 0.25, t);          // el cuerpo
   tone("triangle", f0 * 2.4, f0 * 2.1, 0.05, (0.12 + dist * 0.2) * vel, 0.14, t); // armónico
   hiss(1600 + dist * 1600, 0.9, (0.18 + dist * 0.22) * vel, 0.2 + (1 - dist) * 0.1, t, 600); // chirlera
@@ -102,7 +132,8 @@ function golpeAro(vel) {
   const t = ac.currentTime + 0.005;
   tone("sine", 1900, 950, 0.03, 0.45 * vel, 0.07, t);
   hiss(3800, 3, 0.45 * vel, 0.06, t);
-  tone("sine", 190, 150, 0.04, 0.18 * vel, 0.12, t);
+  if (golpes) muestra(golpes[4], 1.5, 0.25 * vel, t);
+  else tone("sine", 190, 150, 0.04, 0.18 * vel, 0.12, t);
 }
 
 // ---------- toques ----------
@@ -112,7 +143,7 @@ function svgPoint(e) {
   return p.matrixTransform(caja.getScreenCTM().inverse());
 }
 
-let golpes = 0;
+let toques = 0;
 caja.addEventListener("pointerdown", (e) => {
   const { x, y } = svgPoint(e);
   const r = Math.hypot(x, y);
@@ -129,7 +160,7 @@ caja.addEventListener("pointerdown", (e) => {
   verPalillo(x, y);
   cintas.classList.remove("vuelo"); void cintas.getBBox(); cintas.classList.add("vuelo");
   if (navigator.vibrate) navigator.vibrate(r <= R_CUERO ? 12 : 6);
-  if (++golpes === 3) $("hint").classList.add("gone");
+  if (++toques === 3) $("hint").classList.add("gone");
 });
 
 function onda(x, y) {
