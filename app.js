@@ -46,7 +46,7 @@ function el(tag, attrs, parent) {
 // Freesound (CC BY-NC 4.0), cortados en sonidos/. El 5 es el más brillante (para el borde).
 // Mientras no cargaron (o si fallan), suena una caja sintetizada.
 let ac = null, master = null, noise = null;
-const crudos = [1, 2, 3, 4, 5].map((n) => fetch(`sonidos/golpe${n}.wav`).then((r) => r.arrayBuffer()).catch(() => null));
+const crudos = [1, 2, 3, 4, 5].map((n) => fetch(`sonidos/golpe${n}.wav?v=2`).then((r) => r.arrayBuffer()).catch(() => null));
 let golpes = null; // AudioBuffers, cuando están
 
 function audio() {
