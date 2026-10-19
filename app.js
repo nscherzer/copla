@@ -43,10 +43,10 @@ function el(tag, attrs, parent) {
 
 // ---------- sonido ----------
 // Golpes de una caja de verdad: la intro de "vidala quichuista.wav" de lupalenzuela en
-// Freesound (CC BY-NC 4.0), cortados en sonidos/. El 5 es el más brillante (para el borde).
+// Freesound (CC BY-NC 4.0), cortados en sonidos/ (los de antes de que entre la voz).
 // Mientras no cargaron (o si fallan), suena una caja sintetizada.
 let ac = null, master = null, noise = null;
-const crudos = [1, 2, 3, 4, 5].map((n) => fetch(`sonidos/golpe${n}.wav?v=2`).then((r) => r.arrayBuffer()).catch(() => null));
+const crudos = [1, 2, 3, 4].map((n) => fetch(`sonidos/golpe${n}.wav?v=3`).then((r) => r.arrayBuffer()).catch(() => null));
 let golpes = null; // AudioBuffers, cuando están
 
 function audio() {
@@ -111,10 +111,9 @@ function golpeCuero(dist, vel) {
   audio();
   const t = ac.currentTime + 0.005;
   if (golpes) {
-    // al borde, el golpe brillante; si no, uno de los otros cuatro sin repetir el anterior
+    // uno de los cuatro, sin repetir el anterior; al borde va más rápido y con más brillo
     let i;
-    if (dist > 0.8) i = 4;
-    else do { i = Math.floor(Math.random() * 4); } while (i === ultimo);
+    do { i = Math.floor(Math.random() * golpes.length); } while (i === ultimo);
     ultimo = i;
     const rate = (0.9 + dist * 0.28) * (0.98 + Math.random() * 0.04);
     muestra(golpes[i], rate, vel, t, 9000 - (1 - dist) * 5000);
@@ -132,7 +131,7 @@ function golpeAro(vel) {
   const t = ac.currentTime + 0.005;
   tone("sine", 1900, 950, 0.03, 0.45 * vel, 0.07, t);
   hiss(3800, 3, 0.45 * vel, 0.06, t);
-  if (golpes) muestra(golpes[4], 1.5, 0.25 * vel, t);
+  if (golpes) muestra(golpes[ultimo < 0 ? 0 : ultimo], 1.5, 0.25 * vel, t);
   else tone("sine", 190, 150, 0.04, 0.18 * vel, 0.12, t);
 }
 
